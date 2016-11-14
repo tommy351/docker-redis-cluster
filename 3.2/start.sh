@@ -1,13 +1,14 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 set -e
 
 log_dir=/var/log/redis-cluster
+lock_file=/data/cluster.lock
 
 mkdir -p $log_dir
 
 # Initialize configs
-for p in {7000..7005}
+for p in 7000 7001 7002 7003 7004 7005
 do
   conf_path=/redis-$p.conf
   data_dir=/data/redis-$p
@@ -30,7 +31,8 @@ supervisord
 sleep 3
 
 # Create Redis cluster
-if [ -z "/data/redis-7000/nodes.conf" ]; then
+if [ ! -f $lock_file ]; then
+  touch $lock_file
   echo "yes" | /redis-trib.rb create --replicas 1 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005
 fi
 
