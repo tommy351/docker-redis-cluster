@@ -26,7 +26,8 @@ cluster-node-timeout 5000
 cluster-config-file nodes.conf
 appendonly yes
 port $p
-dir $data_dir" > $conf_path
+dir $data_dir
+cluster-announce-ip $CLUSTER_ANNOUNCE_IP" > $conf_path
 
   echo "
 [program:redis-$p]

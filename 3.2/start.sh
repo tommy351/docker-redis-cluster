@@ -4,8 +4,14 @@ set -e
 
 log_dir=/var/log/redis-cluster
 lock_file=/data/cluster.lock
+supervisor_conf=/supervisord.conf
 
 mkdir -p $log_dir
+
+echo "
+[supervisord]
+logfile=$log_dir/supervisord.log
+childlogdir=$log_dir" > $supervisor_conf
 
 # Initialize configs
 for p in 7000 7001 7002 7003 7004 7005
@@ -14,20 +20,23 @@ do
   data_dir=/data/redis-$p
 
   mkdir -p $data_dir
-  cp /redis.conf $conf_path
   echo "
+cluster-enabled yes
+cluster-node-timeout 5000
+cluster-config-file nodes.conf
+appendonly yes
 port $p
-dir $data_dir" >> $conf_path
+dir $data_dir" > $conf_path
 
   echo "
 [program:redis-$p]
 command=redis-server $conf_path
 autorestart=unexpected
-stdout_logfile=$log_dir/$p.log" >> /supervisord.conf
+redirect_stderr=true" >> $supervisor_conf
 done
 
 # Start Redis servers
-supervisord
+supervisord -c $supervisor_conf
 sleep 3
 
 # Create Redis cluster
