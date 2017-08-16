@@ -1,5 +1,7 @@
 # docker-redis-cluster
 
+[![Build Status](https://travis-ci.org/tommy351/docker-redis-cluster.svg?branch=master)](https://travis-ci.org/tommy351/docker-redis-cluster)
+
 A Redis cluster Docker image. This image is for testing environment. **DO NOT use it for production.**
 
 ## Usage
