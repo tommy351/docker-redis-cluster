@@ -5,10 +5,10 @@ MAINTAINER Tommy Chen <tommy351@gmail.com>
 RUN apt-get -y update && \
   apt-get install -y --no-install-recommends --no-install-suggests ruby supervisor rubygems wget && \
   rm -rf /var/lib/apt/lists/* && \
-  gem install redis
+  gem install --no-ri --no-rdoc redis
 
-RUN wget https://raw.githubusercontent.com/antirez/redis/4.0/src/redis-trib.rb -O /redis-trib.rb && \
-  chmod +x /redis-trib.rb
+RUN wget https://raw.githubusercontent.com/antirez/redis/4.0/src/redis-trib.rb -O /usr/local/bin/redis-trib && \
+  chmod +x /usr/local/bin/redis-trib
 
 COPY start.sh /
 VOLUME /data

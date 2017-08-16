@@ -2,16 +2,19 @@
 
 set -e
 
-log_dir=/var/log/redis-cluster
-lock_file=/data/cluster.lock
 supervisor_conf=/supervisord.conf
-
-mkdir -p $log_dir
 
 echo "
 [supervisord]
-logfile=$log_dir/supervisord.log
-childlogdir=$log_dir" > $supervisor_conf
+nodaemon=true
+
+[program:redis-trib-create]
+command=sh -c 'sleep 3 && echo yes | redis-trib create --replicas 1 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005'
+autorestart=false
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0" > $supervisor_conf
 
 # Initialize configs
 for p in 7000 7001 7002 7003 7004 7005
@@ -33,17 +36,11 @@ cluster-announce-ip $CLUSTER_ANNOUNCE_IP" > $conf_path
 [program:redis-$p]
 command=redis-server $conf_path
 autorestart=unexpected
-redirect_stderr=true" >> $supervisor_conf
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0" >> $supervisor_conf
 done
 
 # Start Redis servers
 supervisord -c $supervisor_conf
-sleep 3
-
-# Create Redis cluster
-if [ ! -f $lock_file ]; then
-  touch $lock_file
-  echo "yes" | /redis-trib.rb create --replicas 1 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005
-fi
-
-tail -f $log_dir/*.log
