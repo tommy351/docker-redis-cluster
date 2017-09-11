@@ -23,6 +23,7 @@ do
   data_dir=/data/redis-$p
 
   mkdir -p $data_dir
+  chown redis:redis $data_dir
   echo "
 cluster-enabled yes
 cluster-node-timeout 5000
@@ -36,6 +37,7 @@ cluster-announce-ip $CLUSTER_ANNOUNCE_IP" > $conf_path
 [program:redis-$p]
 command=redis-server $conf_path
 autorestart=unexpected
+user=redis
 stdout_logfile=/dev/stdout
 stdout_logfile_maxbytes=0
 stderr_logfile=/dev/stderr
