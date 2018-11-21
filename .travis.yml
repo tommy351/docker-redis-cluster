@@ -4,9 +4,11 @@ services:
   - docker
 
 env:
+  - VERSION=5.0
   - VERSION=4.0
   - VERSION=3.2
   - VERSION=3.0
+  - VERSION=5.0-alpine
   - VERSION=4.0-alpine
   - VERSION=3.2-alpine
   - VERSION=3.0-alpine
@@ -14,12 +16,10 @@ env:
 install:
   - git clone https://github.com/docker-library/official-images.git ~/official-images
 
-before_script:
-  - image="redis-cluster:$VERSION"
-
 script:
-  - docker build -t "$image" $VERSION
-  - ~/official-images/test/run.sh "$image"
+  - docker-compose build redis-cluster
+  - if [[ $VERSION != 3* ]]; then docker-compose run --rm test; fi
+  - ~/official-images/test/run.sh "tommy351/redis-cluster:$VERSION"
 
 after_script:
   - docker images

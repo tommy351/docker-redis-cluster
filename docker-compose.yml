@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  redis-cluster:
+    build: ${VERSION}
+    image: tommy351/redis-cluster:${VERSION}
+    command:
+      - /bin/sh
+      - -c
+      - CLUSTER_ANNOUNCE_IP=$$(hostname -i) && /start.sh
+  test:
+    image: redis:alpine
+    command:
+      - /bin/sh
+      - -c
+      - |
+        host=redis-cluster
+        port=7000
+        redis="redis-cli -h $$host -p $$port -c"
+
+        while ! $$redis CLUSTER INFO | grep 'cluster_state:ok'
+        do
+          sleep 1
+        done
+
+        $$redis PING
+        $$redis SET foo bar
+        $$redis GET foo
+    depends_on:
+      - redis-cluster
