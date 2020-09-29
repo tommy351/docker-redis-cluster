@@ -8,6 +8,9 @@ RUN apk --update --no-cache add supervisor ruby ca-certificates openssl && \
   wget https://raw.githubusercontent.com/antirez/redis/3.2/src/redis-trib.rb -O $REDIS_TRIB_PATH && \
   chmod +x $REDIS_TRIB_PATH
 
+# lock root password to pass the 'no-hard-coded-passwords' test case
+RUN passwd -l root
+
 COPY start.sh /
 VOLUME /data
 WORKDIR /

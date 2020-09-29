@@ -4,10 +4,12 @@ services:
   - docker
 
 env:
+  - VERSION=6.0
   - VERSION=5.0
   - VERSION=4.0
   - VERSION=3.2
   - VERSION=3.0
+  - VERSION=6.0-alpine
   - VERSION=5.0-alpine
   - VERSION=4.0-alpine
   - VERSION=3.2-alpine

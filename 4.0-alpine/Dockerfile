@@ -3,7 +3,7 @@ FROM redis:4.0-alpine
 MAINTAINER Tommy Chen <tommy351@gmail.com>
 
 RUN apk --update --no-cache add supervisor ruby ca-certificates openssl && \
-  gem install --no-ri --no-rdoc redis && \
+  gem install --no-document redis && \
   REDIS_TRIB_PATH=/usr/local/bin/redis-trib && \
   wget https://raw.githubusercontent.com/antirez/redis/4.0/src/redis-trib.rb -O $REDIS_TRIB_PATH && \
   chmod +x $REDIS_TRIB_PATH
