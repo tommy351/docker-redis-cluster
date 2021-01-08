@@ -29,7 +29,7 @@ do
   chown redis:redis $data_dir
   echo "
 cluster-enabled yes
-cluster-node-timeout 5000
+cluster-node-timeout 15000
 cluster-config-file nodes.conf
 appendonly yes
 port $p
