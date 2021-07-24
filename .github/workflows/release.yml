@@ -1,6 +1,8 @@
 name: Release
 on:
   push:
+    branches:
+      - master
 
 jobs:
   release:
@@ -24,14 +26,24 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Set image tag
         run: |
+          base_tag='tommy351/redis-cluster'
           version='${{ matrix.redis-version }}'
 
           if [ -n '${{ matrix.image-distro }}' ]; then
             version="${version}-${{ matrix.image-distro }}"
           fi
 
+          echo "BASE_TAG=${base_tag}" >> $GITHUB_ENV
+          echo "FULL_TAG=${base_tag}:${version}" >> $GITHUB_ENV
           echo "VERSION=${version}" >> $GITHUB_ENV
       - name: Build Docker image
         run: docker-compose build redis-cluster
       - name: Push Docker image
-        run: docker push tommy351/redis-cluster:${VERSION}
+        run: docker push $FULL_TAG
+      - name: Set latest tag
+        if: ${{ matrix.redis-version == '6.0' }}
+        run: |
+          latest_tag="${BASE_TAG}:${{ matrix.image-distro || 'latest' }}"
+
+          docker tag $FULL_TAG $latest_tag
+          docker push $latest_tag
