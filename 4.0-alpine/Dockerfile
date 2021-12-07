@@ -1,7 +1,5 @@
 FROM redis:4.0-alpine
 
-MAINTAINER Tommy Chen <tommy351@gmail.com>
-
 RUN apk --update --no-cache add supervisor ruby ca-certificates openssl && \
   gem install --no-document redis && \
   REDIS_TRIB_PATH=/usr/local/bin/redis-trib && \

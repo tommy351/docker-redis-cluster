@@ -1,7 +1,5 @@
 FROM redis:4.0
 
-MAINTAINER Tommy Chen <tommy351@gmail.com>
-
 RUN apt-get -y update && \
   apt-get install -y --no-install-recommends --no-install-suggests ruby-redis supervisor wget && \
   rm -rf /var/lib/apt/lists/* && \

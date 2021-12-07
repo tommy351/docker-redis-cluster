@@ -1,7 +1,5 @@
 FROM redis:6.0-alpine
 
-MAINTAINER Tommy Chen <tommy351@gmail.com>
-
 RUN apk --update --no-cache add supervisor
 
 COPY start.sh /
