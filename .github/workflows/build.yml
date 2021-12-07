@@ -35,20 +35,37 @@ jobs:
       - name: Set image context
         id: image
         run: |
-          context='${{ matrix.redis-version }}'
+          version='${{ matrix.redis-version }}'
 
           if [ -n '${{ matrix.image-distro }}' ]; then
-            context="${context}-${{ matrix.image-distro }}"
+            version="${version}-${{ matrix.image-distro }}"
           fi
 
-          tags="${{ env.IMAGE_NAME }}:${context}"
+          tags="${{ env.IMAGE_NAME }}:${version}"
 
           if [ '${{ matrix.redis-version }}' = '6.0' ]; then
             tags="${tags},${{ env.IMAGE_NAME }}:${{ matrix.image-distro || 'latest' }}"
           fi
 
-          echo "::set-output name=context::$context"
+          case '${{ matrix.redis-version }}' in
+            '3.0' | '3.2')
+              dockerfile=Dockerfile.3.x
+              ;;
+            '4.0')
+              dockerfile=Dockerfile.4.x
+              ;;
+            *)
+              dockerfile=Dockerfile.5.x
+              ;;
+          esac
+
+          if [ -n '${{ matrix.image-distro }}' ]; then
+            dockerfile="${dockerfile}-${{ matrix.image-distro }}"
+          fi
+
+          echo "::set-output name=file::$dockerfile"
           echo "::set-output name=tags::$tags"
+          echo "::set-output name=args::REDIS_VERSION=${{ matrix.redis-version }}"
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v3
@@ -57,18 +74,22 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v2
         with:
-          context: ${{ steps.image.outputs.context }}
+          context: .
+          file: ${{ steps.image.outputs.file }}
+          build-args: ${{ steps.image.outputs.args }}
           load: true
           tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TEST_TAG }}
       - name: Test Docker image
         run: docker-compose run --rm test
         if: ${{ !startsWith(matrix.redis-version, '3.') }}
         env:
-          VERSION: ${{ env.IMAGE_TEST_TAG }}
+          IMAGE_TAG: ${{ env.IMAGE_TEST_TAG }}
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          context: ${{ steps.image.outputs.context }}
+          context: .
+          file: ${{ steps.image.outputs.file }}
+          build-args: ${{ steps.image.outputs.args }}
           platforms: linux/amd64,linux/arm64
           push: ${{ github.ref == 'refs/heads/master' }}
           tags: ${{ steps.image.outputs.tags }}

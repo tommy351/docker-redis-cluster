@@ -2,7 +2,7 @@ version: '3'
 
 services:
   redis-cluster:
-    image: tommy351/redis-cluster:${VERSION}
+    image: tommy351/redis-cluster:${IMAGE_TAG}
     command:
       - /bin/sh
       - -c

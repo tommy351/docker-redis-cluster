@@ -1,12 +1,14 @@
-FROM redis:4.0-alpine
+ARG REDIS_VERSION
+
+FROM redis:${REDIS_VERSION}-alpine
 
 RUN apk --update --no-cache add supervisor ruby ca-certificates openssl && \
   gem install --no-document redis && \
   REDIS_TRIB_PATH=/usr/local/bin/redis-trib && \
-  wget https://raw.githubusercontent.com/antirez/redis/4.0/src/redis-trib.rb -O $REDIS_TRIB_PATH && \
+  wget https://raw.githubusercontent.com/antirez/redis/${REDIS_VERSION}/src/redis-trib.rb -O $REDIS_TRIB_PATH && \
   chmod +x $REDIS_TRIB_PATH
 
-COPY start.sh /
+COPY start-4.x.sh /start.sh
 VOLUME /data
 WORKDIR /
 

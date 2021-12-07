@@ -1,10 +1,12 @@
-FROM redis:6.0
+ARG REDIS_VERSION
+
+FROM redis:${REDIS_VERSION}
 
 RUN apt-get -y update && \
   apt-get install -y --no-install-recommends --no-install-suggests supervisor && \
   rm -rf /var/lib/apt/lists/*
 
-COPY start.sh /
+COPY start-5.x.sh /start.sh
 VOLUME /data
 WORKDIR /
 
