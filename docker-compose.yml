@@ -17,13 +17,25 @@ services:
         port=7000
         redis="redis-cli -h $$host -p $$port -c"
 
+        # Wait until the cluster is ready
         while ! $$redis CLUSTER INFO | grep 'cluster_state:ok'
         do
           sleep 1
         done
 
+        # Send ping
         $$redis PING
+
+        # Try to set & get
         $$redis SET foo bar
         $$redis GET foo
+
+        # Check server version
+        redis_version=$$($$redis INFO server | grep 'redis_version:' | cut -d: -f2)
+
+        if [[ $$redis_version != ${REDIS_VERSION}.* ]]; then
+          echo "Expected Redis version to be ${REDIS_VERSION}.*, got $${redis_version}"
+          exit 1
+        fi
     depends_on:
       - redis-cluster

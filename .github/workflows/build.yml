@@ -84,6 +84,7 @@ jobs:
         if: ${{ !startsWith(matrix.redis-version, '3.') }}
         env:
           IMAGE_TAG: ${{ env.IMAGE_TEST_TAG }}
+          REDIS_VERSION: ${{ matrix.redis-version }}
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
