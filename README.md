@@ -1,6 +1,6 @@
 # docker-redis-cluster
 
-[![Test](https://github.com/tommy351/docker-redis-cluster/actions/workflows/test.yml/badge.svg)](https://github.com/tommy351/docker-redis-cluster/actions/workflows/test.yml) [![Release](https://github.com/tommy351/docker-redis-cluster/actions/workflows/release.yml/badge.svg)](https://github.com/tommy351/docker-redis-cluster/actions/workflows/release.yml)
+[![Build](https://github.com/tommy351/docker-redis-cluster/actions/workflows/build.yml/badge.svg)](https://github.com/tommy351/docker-redis-cluster/actions/workflows/build.yml)
 
 A Redis cluster Docker image. This image is for testing environment. **DO NOT use it for production.**
 
