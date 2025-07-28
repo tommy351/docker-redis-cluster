@@ -4,7 +4,7 @@ FROM redis:${REDIS_VERSION}-alpine
 
 RUN apk --update --no-cache add supervisor
 
-COPY start-5.x.sh /start.sh
+COPY start.sh /start.sh
 VOLUME /data
 WORKDIR /
 

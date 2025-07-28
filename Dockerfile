@@ -6,7 +6,7 @@ RUN apt-get -y update && \
   apt-get install -y --no-install-recommends --no-install-suggests supervisor && \
   rm -rf /var/lib/apt/lists/*
 
-COPY start-5.x.sh /start.sh
+COPY start.sh /start.sh
 VOLUME /data
 WORKDIR /
 
