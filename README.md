@@ -9,7 +9,17 @@ A Redis cluster Docker image. This image is for testing environment. **DO NOT us
 Start a cluster. It will start 6 Redis servers listening on `7000~7005` port and a supervisor to make sure all servers started. After all servers are started, redis-trib will create a Redis cluster.
 
 ``` sh
+# For Redis 3.x
 docker run -p 7000:7000 -p 7001:7001 -p 7002:7002 -p 7003:7003 -p 7004:7004 -p 7005:7005 tommy351/redis-cluster:3.2
+
+# For Redis 4.x
+docker run -p 7000:7000 -p 7001:7001 -p 7002:7002 -p 7003:7003 -p 7004:7004 -p 7005:7005 tommy351/redis-cluster:4.0
+
+# For Redis 5.x, 6.x, 7.x, 8.x
+docker run -p 7000:7000 -p 7001:7001 -p 7002:7002 -p 7003:7003 -p 7004:7004 -p 7005:7005 tommy351/redis-cluster:5.0
+docker run -p 7000:7000 -p 7001:7001 -p 7002:7002 -p 7003:7003 -p 7004:7004 -p 7005:7005 tommy351/redis-cluster:6.0
+docker run -p 7000:7000 -p 7001:7001 -p 7002:7002 -p 7003:7003 -p 7004:7004 -p 7005:7005 tommy351/redis-cluster:7.2
+docker run -p 7000:7000 -p 7001:7001 -p 7002:7002 -p 7003:7003 -p 7004:7004 -p 7005:7005 tommy351/redis-cluster:8.0
 ```
 
 You can mount a data volume on `/data`.
