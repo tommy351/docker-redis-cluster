@@ -3,6 +3,7 @@
 set -e
 
 supervisor_conf=/supervisord.conf
+redis_user=redis
 
 echo "
 [supervisord]
@@ -11,6 +12,7 @@ nodaemon=true
 [program:redis-cluster-create]
 command=sh -c 'sleep 3 && echo yes | redis-cli --cluster create --cluster-replicas 1 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005'
 autorestart=false
+user=$redis_user
 stdout_logfile=/dev/stdout
 stdout_logfile_maxbytes=0
 stderr_logfile=/dev/stderr
@@ -33,11 +35,13 @@ port $p
 dir $data_dir
 cluster-announce-ip $CLUSTER_ANNOUNCE_IP" > $conf_path
 
+chown $redis_user:$redis_user $conf_path
+
   echo "
 [program:redis-$p]
 command=redis-server $conf_path
 autorestart=unexpected
-user=redis
+user=$redis_user
 stdout_logfile=/dev/stdout
 stdout_logfile_maxbytes=0
 stderr_logfile=/dev/stderr
